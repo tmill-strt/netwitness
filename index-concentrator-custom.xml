@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language level="IndexNone" defaultAction="Auto">
+	<!--
+	Custom Index Language Definition File 10.6 (December, 2015)
+
+	<language> root node which specifies any defaults found in key nodes
+		<key> child node of language which can have the following attributes:
+			name = Name of the key (max is 16 chars)
+			description = Description of the key (max is 256 bytes, strings encoded as UTF-8)
+			format = Type format of the value which can be:
+				Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, UInt128
+				Float32, Float64, TimeT, Binary, Text, IPv4, IPv6, MAC
+			level = The index level for the key.  If not defined, it will be set to IndexNone.
+				IndexNone   - Default index level which provides no indexing
+				IndexKeys   - Provide indexing at the key level (e.g., identify which sessions have values, but do not track
+					          the actual values.  This provides highly efficient exists or !exists queries, but slower
+							  queries for other operators like: key = 'some value'
+				IndexValues - Highest indexing level.  Provides the best performance for all query operators but also takes
+				              the most time to index and requires the most storage space.
+			valueMax = Maximum number of unique values allowed per index slice (typically 1 to 4 slices are created per day).
+			           Zero means unbounded.  Only applicable to level="IndexValues"
+			defaultAction = Default investigation action for each report: Open, Closed, Auto, Hidden
+			protected = A flag indicating to downstream components that the appropriate access, persistence, retention, and
+						propagation policies must be applied to meta values received of this key type:
+				true 	- The key will have the protected flag set
+				false	- default behavior, equivalent to not specifying the protected attribute
+			transient = Indicates that any meta values created for this key during content parsing should not be
+						persisted and will not be visible to any downstream/client services:
+				true 	- The above behavior is enabled (decoder/logdecoder only)
+				false	- default behavior, equivalent to not specifying the transient attribute
+			token = An informational flag indicating that values for this key are stand-ins for another value and may not be
+					visually interesting, primarily for UI elements to display the value in a more useful or visually
+					pleasing format:
+				true 	- The key will have the token flag set
+				false	- default behavior, equivalent to not specifying the token attribute
+            bucket = A flag indicating the value is a size (UInt32 or UInt64 only) and should be indexed at predefined intervals,
+                     thus ensuring better performance by decreasing the number of unique values.  A bucket is defined as a range
+                     whereby the real size will be rounded down to something like 203 KB, 5 MB, 1 GB, etc.  Anything less than
+                     1 KB is kept as the specific byte count.
+                true    - The key will have the real size indexed at the closest bucket interval (rounded down)
+                false   - The default, do not bucket.
+                    
+
+			<value> Sub element of key which specifies overrides at the value level:
+				name = Specific value for the override
+				action = keep|filter
+				
+			<aliases> - Sub element of <key> for providing human readable aliases for parsed meta values
+				<alias format="$value $alias or just $alias" value="a value">alias string</alias>
+			</aliases>
+
+			<transform> This child element of key indicates that any values of this key type created during content parsing
+						(decoder/logdecoder) will be transformed and the resulting value persisted in another key,
+						informational when specified on other services
+				destination = specifies the key name of the transformed meta value to create
+
+	Decoder examples - Normally you do not need to edit index files on the Decoder, unless you want to add
+	aliases or have data privacy requirements.  Parsers and feeds declare their meta keys internally and those keys
+	are automatically added to the language.  Also, you should *never* set the index level to IndexKeys or IndexValues
+	on a Decoder if you have a Concentrator/Archiver aggregating from it.  The index partition size is too small to
+	support any indexing beyond the default "time" meta.
+
+		Data privacy
+		<key description="existing meta key" format="Text" level="IndexNone" name="existing" protected="true">
+			<transform destination="existing.hash"/>
+		</key>
+
+	Concentrator/Archiver examples - Any new meta keys that should be indexed must be added to this file.
+
+		Adding new meta key for custom parser at the index key level
+		<key description="my new parser meta key" format="Text" level="IndexKeys" name="mynewparserkey"/>
+
+		Data privacy
+		<key description="existing meta key" format="Text" level="IndexValues" name="existing" protected="true">
+			<transform destination="existing.hash"/>
+		</key>
+		<key description="existing meta key hash" format="Text" level="IndexValues" name="existing.hash" token="true"/>
+
+	Broker derives its language from all the devices it aggregates from.  There is simply no need to edit a broker's
+	custom language file.
+	-->
+	
+	<!-- *** Please insert your custom keys or modifications below this line *** -->
+	
+<key description="TCP Flags" level="IndexValues" name="tcpflags" valueMax="100" format="Text"/>
+<key description="HTTP Request Header" format="Text" level="IndexValues" name="http.request" defaultAction="Closed" valueMax="5000" />
+<key description="HTTP Response Header" format="Text" level="IndexValues" name="http.response" defaultAction="Closed" valueMax="5000" />
+<key description="Unique HTTP Request Header" level="IndexKeys" name="req.uniq" format="Text" defaultAction="Closed"/>
+<key description="Unique HTTP Response Header" level="IndexKeys" name="resp.uniq" format="Text" defaultAction="Closed"/>
+<key description="HTTP Response Size" format="Text" level="IndexKeys" name="http.respsize" defaultAction="Closed" />
+<!-- Override default index levels -->
+<key description="IP Aliases" level="IndexValues" name="alias.ip" valueMax="2500000" defaultAction="Closed"/>
+<key description="Originating IP Address" level="IndexValues" format="Text" name="orig_ip" valueMax="2500000" defaultAction="Closed"/>
+<key description="SSL CA" level="IndexValues" name="ssl.ca" format="Text" valueMax="100000" defaultAction="Closed"/>
+<key description="SSL Subject" level="IndexValues" name="ssl.subject" format="Text" valueMax="100000" defaultAction="Closed"/>
+<key description="Filename" level="IndexValues" format="Text" name="filename" valueMax="2000000" defaultAction="Closed"/>
+<key description="Browser Print" format="Text" level="IndexValues" name="browserprint" defaultAction="Closed" valueMax="500000" />
+<key description="Credit Card Number" format="Text" level="IndexValues" name="cc.number" defaultAction="Closed" valueMax="500000" />
+<key description="SLD" format="Text" level="IndexValues" name="sld" defaultAction="Closed" valueMax="500000" />
+<key description="Session Streams" level="IndexValues" name="streams" format="UInt8" valueMax="3" defaultAction="Closed"/>
+<key description="Certificate Checksum" format="Text" level="IndexValues" name="cert.checksum" defaultAction="Closed" valueMax="500000" />
+<key description="JA3" format="Text" level="IndexValues" name="ja3" defaultAction="Closed" valueMax="500000" />
+<key description="JA3S" format="Text" level="IndexValues" name="ja3s" defaultAction="Closed" valueMax="500000" />	
+<key description="Cookie" format="Text" level="IndexKeys" name="cookie" defaultAction="Closed"  />
+<key description="Cookie Length" level="IndexValues" name="cookie.len" valueMax="65536" format="UInt16"/>
+<key description="Cookie Value Count" level="IndexValues" name="cookie.val" valueMax="65536" format="UInt16"/>
+<key description="SMB Path" level="IndexValues" name="smb.path" format="Text"/>
+<key description="ASN Source" level="IndexValues" name="asn.src" format="Text"/>
+<key description="ASN Destination" level="IndexValues" name="asn.dst" format="Text"/>
+<!-- IR Feed based Keys -->
+<key description="IR Feed" format="Text" level="IndexValues" name="ir.feed" valueMax="100000" />
+<key description="IR MD5" format="Text" level="IndexNone" name="ir.md5" />
+<key description="IR Description" format="Text" level="IndexKeys" name="ir.desc" />
+
+<!-- POC ThreatConnect Feed based Keys -->
+<key description="T Owner" format="Text" level="IndexValues" name="t.owner"  defaultAction="Closed" />
+<key description="T Rating" valueMax="65536" format="Float32" level="IndexKeys" name="t.rating"  defaultAction="Closed"/>
+<key description="T Confidence" valueMax="65536" format="UInt16" level="IndexKeys" name="t.conf"  defaultAction="Closed"/>
+<key description="T Score" valueMax="65536" format="UInt16" level="IndexKeys" name="t.score"  defaultAction="Closed" />
+<key description="T Date Added" format="Text" level="IndexValues" name="t.dtadded"  defaultAction="Closed" />
+
+<!-- Direction App Rules -->
+<key description="Direction" level="IndexValues" name="direction" valueMax="100" format="Text"/>
+<!-- Named_Pipe -->
+<key description="Pipe Details" level="IndexValues" name="named.pipe" valueMax="10000" format="Text" defaultAction="Closed"/>
+<!-- Advanced RDP -->
+<key description="RDP Info" level="IndexValues" name="rdp.info" valueMax="10000" format="Text" defaultAction="Closed"/>
+<!-- NWE Tracking Data -->
+<key description="Checksum" format="Text" level="IndexValues" name="checksum" valueMax="1000000" defaultAction="Open"/>
+<key description="Parent Process" format="Text" level="IndexValues" name="parent.process" valueMax="1000000" defaultAction="Open"/>
+<key description="Parent Process Parameters" format="Text" level="IndexValues" name="parent.params" valueMax="1000000" defaultAction="Open"/>
+<key description="Process Parameters" format="Text" level="IndexValues" name="params" valueMax="1000000" defaultAction="Open"/>
+<key description="Category" format="Text" level="IndexValues" name="category" valueMax="1000000" defaultAction="Open"/>
+
+<key description="Querystring" level="IndexValues" name="query" format="Text"/>
+<key description="HTTP Title" level="IndexValues" name="http.title" format="Text"/>
+<key description="Signal" level="IndexValues" name="signal" format="Text"/>
+
+<!-- Lateral Movement Meta -->
+<key description="HVA Escalation Contact" level="IndexValues" name="fd.escalate" format="Text"/>
+<key description="High Value Asset Group" level="IndexValues" name="fd.hva.group" format="Text"/>
+<key description="High Value Asset Type" level="IndexValues" name="fd.hva.type" format="Text"/>
+<key description="HVA Product Line" level="IndexValues" name="fd.prod.line" format="Text"/>
+<key description="High Value Asset Description" level="IndexValues" name="fd.hva.desc" format="Text"/> 
+</language>
