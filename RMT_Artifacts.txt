@@ -1,0 +1,27 @@
+C:\Windows\system32\config\SYSTEM
+C:\Windows\system32\config\SOFTWARE
+C:\Windows\system32\config\SAM
+C:\Windows\system32\winevt\logs\*.evtx
+C:\Windows\system32\winevt\logs\Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx
+C:\Windows\system32\winevt\logs\Microsoft-Windows-TerminalServices-RDPClient/Operational.evtx
+C:\Windows\system32\winevt\logs\Microsoft-Windows-BITS*.evtx
+C:\Windows\system32\winevt\logs\System.evtx
+C:\Windows\system32\winevt\logs\Application.evtx
+C:\Windows\system32\winevt\logs\Security.evtx
+C:\Windows\System32\winevt\Logs\Microsoft-Windows-WinRM%4Operational.evtx
+C:\Windows\System32\winevt\Logs\Microsoft-Windows-TaskScheduler Operational.evtx
+C:\Windows\System32\winevt\Logs\Microsoft-Windows-TerminalServices-*.evtx
+C:\Windows\System32\winevt\Logs\Microsoft-Windows-PowerShell%4Admin.evtx
+C:\Windows\System32\winevt\Logs\Microsoft-Windows-PowerShell%4Operational.evtx
+C:\Windows\AppCompat\Programs\RecentFilecache.bcf
+C:\Windows\AppCompat\Programs\Amcache.hve
+C:\Windows\System32\Tasks\At*.job
+C:\Windows\Tasks\At*.job
+C:\Windows\Prefetch\*.pf
+C:\Windows\System32\wbem\Repository\OBJECTS.DATA
+C:\Windows\System32\wbem\Repository\FS\OBJECTS.DATA
+C:\ProgramData\Microsoft\Network\Downloader\qmgr*.dat
+C:\Windows\System32\LogFiles\SUM\*.mdb
+c:\windows\system32\LogFiles\SUM\Custom.mdb
+C:\Users\<USER>\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
+C:\Users\<USER>\NTUser.dat
